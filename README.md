@@ -11,7 +11,6 @@
 
 - McHorse for his mods
 - Creman for help with realization
-- O. for everything
 
 ## License
 
