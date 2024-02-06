@@ -1,0 +1,86 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+
+version = "1.0"
+group = "kiraririria.aprilmod"
+archivesBaseName = "aprilmod"
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+/* Minecraft configuration */
+
+minecraft {
+    version = "1.12.2-14.23.5.2799"
+    runDir = "run"
+    mappings = "snapshot_20171003"
+    clientRunArgs= ["-Xmx6G", "-Dfml.coreMods.load=kiraririria.aprilmod.core.AprilCoreMod"]
+    clientJvmArgs = ["-Xmx6G", "-Dfml.coreMods.load=kiraririria.aprilmod.core.AprilCoreMod"]
+    serverJvmArgs = ["-Xmx6G"]
+
+}
+dependencies {
+    compile files("run/libs/aperture-1.8.1-1.12.2-dev.jar")
+    compile files("run/libs/blockbuster-2.6.1-1.12.2-dev.jar")
+    compile files("run/libs/mclib-2.4.2-1.12.2-dev.jar")
+    compile files("run/libs/mappet-0.8-1.12.2-dev.jar")
+    compile files("run/libs/metamorph-1.3.1-1.12.2-dev.jar")
+    compile files("run/libs/Minema-3.7.1-1.12.2-dev.jar")
+}
+
+jar {
+   manifest {
+       attributes 'FMLCorePlugin': "kiraririria.aprilmod.core.AprilCoreMod", 'FMLCorePluginContainsFMLMod': 'true'
+   }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+/* Dev build */
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+artifacts {
+    archives deobfJar
+    archives sourcesJar
+}
+
+repositories {
+    mavenCentral()
+}
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
