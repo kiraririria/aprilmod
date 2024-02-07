@@ -9,15 +9,7 @@
         "CremanTop",
         "KirariRiria"
     ],
-    "credits": "Thanks, McHorse, darling~~~. Thanks, Creman, cutie... Thanks, O.",
-    "logoFile": "logo.png",
-    "requiredMods": [
-        "mclib",
-        "metamorph"
-    ],
-    "dependencies": [
-        "mclib",
-        "metamorph"
-    ]
+    "credits": "Thanks, McHorse, darling~~~. Thanks, Creman, cutie...",
+    "logoFile": "logo.png"
 }
 ]

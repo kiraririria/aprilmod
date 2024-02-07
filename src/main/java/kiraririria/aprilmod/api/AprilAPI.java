@@ -1,52 +1,57 @@
 package kiraririria.aprilmod.api;
 
-import kiraririria.aprilmod.AprilMod;
 import net.minecraft.client.AnvilConverterException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldSummary;
 
-import java.io.File;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Robot;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * [Called by ASM]
- * Change MainMenu
- * Client Side only implicitly
- */
 public class AprilAPI
 {
-    public static final String MAP_NAME = "Апрель";
-    public static final String APP_DATA_PATH = System.getenv("APPDATA");
-    private static final String FILE_DIRECTORY = AprilAPI.APP_DATA_PATH + "\\.firstapril";
-    private static final String FILE_NAME = "finished";
-    public static void renderHerobrine(GuiMainMenu self, int mouseX, int mouseY, float partialTicks) throws Exception
-    {
-        GlStateManager.translate(self.width, self.height, 0.0F);
-        GlStateManager.rotate(-180, 0.0F, 0.0F, 1.0F);
-    }
+    public static String MAP_NAME = "Апрель";
+    public static String APP_DATA_PATH = System.getenv("APPDATA");
+    public static String FILE_DIRECTORY = AprilAPI.APP_DATA_PATH + "\\.firstapril";
+    public static String FILE_NAME = "finished";
+    public static int BLUE_SCREEN_WAITING = 4000;
+    public static int BLUE_SCREEN_PRE_WAITING = 4000;
+    public static String BLUE_SCREEN_LOGO = "Blue Screen of Death";
+    public static String BLUE_SCREEN_HTML = "<html>Your PC ran into a problem and needs to restart.<br>We're just collecting some error info, and then we'll restart for you.<br>А если по-русски, то ты первое апреля поздравляю<br>подпишись на бусти пж..<html>";
+
+    /**
+     * [Called by ASM]
+     * Change MainMenu
+     * Client Side only implicitly
+     */
     public static void finishMap()
     {
         if (isFinished())
         {
             if (deleteMapWorld())
             {
-                new Thread(() -> {
+                deleteFinishedFile();
+                new Thread(() ->
+                {
                     try
                     {
-                        Thread.sleep(4000);
+                        Thread.sleep(BLUE_SCREEN_PRE_WAITING);
                         showBlueScreen();
                     }
                     catch (InterruptedException e)
@@ -57,11 +62,22 @@ public class AprilAPI
             }
         }
     }
+
+    /**
+     * [API Scripting]
+     * //Example:
+     * function finishMap(player)
+     * {
+     * var AprilAPI = Java.type("kiraririria.aprilmod.api.AprilAPI");
+     * AprilAPI.finish(player.getMCEntity(),"Finish")
+     * }
+     */
     public static void finish(EntityPlayerMP player, String message)
     {
         player.connection.disconnect(new TextComponentString(message));
         createFinishedFile();
     }
+
     public static boolean deleteMapWorld()
     {
         Minecraft mc = Minecraft.getMinecraft();
@@ -82,14 +98,14 @@ public class AprilAPI
         for (WorldSummary worldSummary : filtered)
         {
             isaveformat.deleteWorldDirectory(worldSummary.getFileName());
-            deleteFinishedFile();
             result = true;
         }
         return result;
     }
+
     public static void showBlueScreen()
     {
-        JFrame frame = new JFrame("Blue Screen of Death");
+        JFrame frame = new JFrame(BLUE_SCREEN_LOGO);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -111,7 +127,7 @@ public class AprilAPI
         smileLabel.setBorder(new EmptyBorder(120, 150, 0, 0));
         frame.add(smileLabel, BorderLayout.NORTH);
 
-        JLabel infoLabel = new JLabel("<html>Your PC ran into a problem and needs to restart.<br>We're just collecting some error info, and then we'll restart for you.<br>А если по-русски, то ты первое апреля поздравляю<br>подпишись на бусти пж..<html>");
+        JLabel infoLabel = new JLabel(BLUE_SCREEN_HTML);
         infoLabel.setForeground(Color.WHITE);
         infoLabel.setFont(new Font("Arial", Font.PLAIN, 40));
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -126,7 +142,7 @@ public class AprilAPI
         try
         {
             Robot robot = new Robot();
-            robot.delay(4000);
+            robot.delay(BLUE_SCREEN_WAITING);
         }
         catch (AWTException e)
         {

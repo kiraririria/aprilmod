@@ -1,11 +1,6 @@
 package kiraririria.aprilmod.core;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 public abstract class CoreClassTransformer implements IClassTransformer
 {
@@ -21,10 +16,5 @@ public abstract class CoreClassTransformer implements IClassTransformer
         }
 
         return false;
-    }
-
-    public static String get(String notch, String mcp)
-    {
-        return obfuscated ? notch : mcp;
     }
 }
