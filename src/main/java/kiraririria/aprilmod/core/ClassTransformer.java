@@ -20,5 +20,30 @@ public abstract class ClassTransformer
         return writer.toByteArray();
     }
 
+    protected String checkName(MethodNode method, String notch, String notchSign, String mcp, String mcpSign)
+    {
+        if (CoreClassTransformer.obfuscated)
+        {
+            return method.name.equals(notch) && method.desc.equals(notchSign) ? notch : null;
+        }
+        else
+        {
+            return method.name.equals(mcp) && method.desc.equals(mcpSign) ? mcp : null;
+        }
+    }
+
+    protected LabelNode getFirstLabel(MethodNode method)
+    {
+        for (AbstractInsnNode node = method.instructions.getFirst(); node != null; node = node.getNext())
+        {
+            if (node instanceof LabelNode)
+            {
+                return (LabelNode) node;
+            }
+        }
+
+        return null;
+    }
+
     public abstract void process(String name, ClassNode node);
 }

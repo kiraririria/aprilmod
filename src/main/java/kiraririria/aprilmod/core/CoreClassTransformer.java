@@ -17,4 +17,9 @@ public abstract class CoreClassTransformer implements IClassTransformer
 
         return false;
     }
+
+    public static String get(String notch, String mcp)
+    {
+        return obfuscated ? notch : mcp;
+    }
 }
